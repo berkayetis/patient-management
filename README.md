@@ -37,7 +37,7 @@ A Spring Boot based microservice for managing patient records, including registr
 
 - Java 21
 - Maven
-- Docker & Docker Compose
+- Docker
 
 ---
 
