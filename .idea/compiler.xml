@@ -6,26 +6,30 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="analytics-service" />
         <module name="api-gateway" />
-        <module name="patient-service" />
+        <module name="analytics-service" />
         <module name="auth-service" />
+        <module name="patient-service" />
         <module name="integration-tests" />
         <module name="billing-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="patient-management" target="21" />
+      <module name="analystics-service" target="21" />
+      <module name="common-redis" target="21" />
+      <module name="redis-local" target="21" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="analystics-service" options="-parameters" />
       <module name="analytics-service" options="-parameters" />
       <module name="api-gateway" options="-parameters" />
       <module name="auth-service" options="-parameters" />
       <module name="billing-service" options="-parameters" />
-      <module name="patient-management" options="-parameters" />
+      <module name="common-redis" options="-parameters" />
       <module name="patient-service" options="-parameters" />
+      <module name="redis-local" options="-parameters" />
     </option>
   </component>
 </project>

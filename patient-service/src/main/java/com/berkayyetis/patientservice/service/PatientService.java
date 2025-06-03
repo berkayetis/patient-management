@@ -6,6 +6,11 @@ import java.util.UUID;
 
 import com.berkayyetis.patientservice.grpc.BillingServiceGrpcClient;
 import com.berkayyetis.patientservice.kafka.KafkaProducer;
+
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.berkayyetis.patientservice.dto.PatientRequestDTO;
@@ -21,6 +26,7 @@ public class PatientService {
     private final PatientRepository patientRepository;
     private final BillingServiceGrpcClient billingServiceGrpcClient;
     private final KafkaProducer kafkaProducer;
+
     public PatientService(PatientRepository patientRepository,
                           BillingServiceGrpcClient billingServiceGrpcClient,
                           KafkaProducer kafkaProducer) {
@@ -29,13 +35,14 @@ public class PatientService {
         this.kafkaProducer = kafkaProducer;
     }
 
-    public List<PatientResponseDTO> getPatients(){
-        List<Patient> patients = patientRepository.findAll();
+    @Cacheable(value = "patients", key = "#pageable.pageNumber + '-' + #pageable.pageSize")
+    public List<PatientResponseDTO> getPatients(Pageable pageable){
 
-        return patients.stream()
-                .map(PatientMapper::toDTO).toList();
+        Page<Patient> patients = patientRepository.findAll(pageable);
+        return patients.map(PatientMapper::toDTO).getContent();
     }
 
+    @CachePut(value = "PATIENT", key = "#result.id")
     public PatientResponseDTO createPatient(PatientRequestDTO patientRequestDTO) {
         if (patientRepository.existsByEmail(patientRequestDTO.getEmail())) {
             throw new EmailAlreadyExistsException("Email already exists:" + patientRequestDTO.getEmail());
@@ -48,7 +55,6 @@ public class PatientService {
                 patient.getEmail());
 
         kafkaProducer.sendEvent(patient);
-
         return PatientMapper.toDTO(patient);
     }
 

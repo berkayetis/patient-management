@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DdlMappings">
+    <mapping uuid="80267293-273b-4118-afbb-ec16a58f6661" name="0@redis-cache Mapping">
+      <data-sources db="3252c29d-7638-4b67-a664-442fbfb439da" />
+      <scope>
+        <node negative="1">
+          <node kind="database" negative="1" />
+          <node kind="schema" qname="0" />
+        </node>
+      </scope>
+    </mapping>
+  </component>
+</project>
