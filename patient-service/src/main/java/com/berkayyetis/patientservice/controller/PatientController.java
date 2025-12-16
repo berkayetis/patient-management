@@ -3,6 +3,7 @@ package com.berkayyetis.patientservice.controller;
 import java.util.List;
 import java.util.UUID;
 
+import com.berkayyetis.patientservice.dto.PagedPatientResponseDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -31,12 +32,14 @@ public class PatientController {
 
     @GetMapping
     @Operation(summary = "Get all patients", description = "Retrieve a list of all patients")
-    public ResponseEntity<List<PatientResponseDTO>> getPatients(@PageableDefault(
-            page = 0,
-            size = 10,
-            sort = "id",
-            direction = Sort.Direction.ASC) Pageable pageable) {
-        var allPatients = patientService.getPatients(pageable);
+    public ResponseEntity<PagedPatientResponseDTO> getPatients(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "asc") String sort,
+            @RequestParam(defaultValue = "name") String sortField,
+            @RequestParam(defaultValue = "") String searchValue) {
+        var allPatients = patientService.getPatients(page,size,sort,sortField,searchValue);
+
         return ResponseEntity.ok().body(allPatients);
     }
 

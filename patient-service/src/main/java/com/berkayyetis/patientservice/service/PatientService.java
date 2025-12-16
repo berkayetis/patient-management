@@ -4,13 +4,16 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+import com.berkayyetis.patientservice.dto.PagedPatientResponseDTO;
 import com.berkayyetis.patientservice.grpc.BillingServiceGrpcClient;
 import com.berkayyetis.patientservice.kafka.KafkaProducer;
 
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.berkayyetis.patientservice.dto.PatientRequestDTO;
@@ -35,11 +38,30 @@ public class PatientService {
         this.kafkaProducer = kafkaProducer;
     }
 
-    @Cacheable(value = "patients", key = "#pageable.pageNumber + '-' + #pageable.pageSize")
-    public List<PatientResponseDTO> getPatients(Pageable pageable){
+    @Cacheable(value = "patients", key = "#size + '-' + #page")
+    public PagedPatientResponseDTO getPatients(int page, int size, String sort, String sortField, String searchValue){
 
-        Page<Patient> patients = patientRepository.findAll(pageable);
-        return patients.map(PatientMapper::toDTO).getContent();
+        Pageable pageable = PageRequest.of(page, size,
+                sort.equalsIgnoreCase("desc")
+                        ? Sort.by(sortField).descending()
+                        : Sort.by(sortField).ascending());
+
+        Page<Patient> patientPage;
+        if(searchValue == null || searchValue.isBlank()){
+            patientPage = patientRepository.findAll(pageable);
+        }
+        else{
+            patientPage = patientRepository.findByNameContainingIgnoreCase(searchValue, pageable);
+        }
+
+        List<PatientResponseDTO> patientResponseDtos = patientPage.getContent().stream().map(PatientMapper::toDTO).toList();
+
+        return new PagedPatientResponseDTO(
+                patientResponseDtos,
+                patientPage.getNumber(),
+                patientPage.getSize(),
+                patientPage.getTotalPages(),
+                (int)patientPage.getTotalElements());
     }
 
     @CachePut(value = "PATIENT", key = "#result.id")
