@@ -6,9 +6,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="auth-service" />
+        <module name="infrastructure" />
         <module name="api-gateway" />
         <module name="analytics-service" />
-        <module name="auth-service" />
         <module name="patient-service" />
         <module name="integration-tests" />
         <module name="billing-service" />
@@ -18,6 +19,7 @@
       <module name="analystics-service" target="21" />
       <module name="common-redis" target="21" />
       <module name="redis-local" target="21" />
+      <module name="untitled" target="21" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

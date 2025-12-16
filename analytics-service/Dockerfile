@@ -11,7 +11,7 @@ COPY src ./src
 RUN mvn clean package
 
 #second stage RUNNER
-FROM openjdk:21-jdk AS runner
+FROM eclipse-temurin:21 AS runner
 
 WORKDIR /app
 

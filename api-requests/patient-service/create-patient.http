@@ -4,9 +4,9 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "name": "Berkay Cached New2",
-  "email": "normal_cache7@example.com",
-  "registeredDate": "2025-04-04",
+  "name": "Berkay Yets",
+  "email": "tatawa3@example.com",
+  "registeredDate": "2025-11-04",
   "address": "1234 main street",
   "dateOfBirth": "1995-01-01"
 }
