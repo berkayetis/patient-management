@@ -8,8 +8,6 @@ import com.berkayyetis.patientservice.dto.PagedPatientResponseDTO;
 import com.berkayyetis.patientservice.grpc.BillingServiceGrpcClient;
 import com.berkayyetis.patientservice.kafka.KafkaProducer;
 
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -38,10 +36,9 @@ public class PatientService {
         this.kafkaProducer = kafkaProducer;
     }
 
-    @Cacheable(value = "patients", key = "#size + '-' + #page")
     public PagedPatientResponseDTO getPatients(int page, int size, String sort, String sortField, String searchValue){
 
-        Pageable pageable = PageRequest.of(page, size,
+        Pageable pageable = PageRequest.of(page-1, size,
                 sort.equalsIgnoreCase("desc")
                         ? Sort.by(sortField).descending()
                         : Sort.by(sortField).ascending());
@@ -54,17 +51,17 @@ public class PatientService {
             patientPage = patientRepository.findByNameContainingIgnoreCase(searchValue, pageable);
         }
 
-        List<PatientResponseDTO> patientResponseDtos = patientPage.getContent().stream().map(PatientMapper::toDTO).toList();
+        List<PatientResponseDTO> patientResponseDtos = patientPage.getContent()
+                .stream().map(PatientMapper::toDTO).toList();
 
         return new PagedPatientResponseDTO(
                 patientResponseDtos,
-                patientPage.getNumber(),
+                patientPage.getNumber() + 1,
                 patientPage.getSize(),
                 patientPage.getTotalPages(),
                 (int)patientPage.getTotalElements());
     }
 
-    @CachePut(value = "PATIENT", key = "#result.id")
     public PatientResponseDTO createPatient(PatientRequestDTO patientRequestDTO) {
         if (patientRepository.existsByEmail(patientRequestDTO.getEmail())) {
             throw new EmailAlreadyExistsException("Email already exists:" + patientRequestDTO.getEmail());

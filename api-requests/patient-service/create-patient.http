@@ -5,7 +5,7 @@ Authorization: Bearer {{token}}
 
 {
   "name": "Berkay Yets",
-  "email": "tatawa3@example.com",
+  "email": "tatawa5134@example.com",
   "registeredDate": "2025-11-04",
   "address": "1234 main street",
   "dateOfBirth": "1995-01-01"
