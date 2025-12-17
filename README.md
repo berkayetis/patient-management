@@ -25,6 +25,7 @@ A Spring Boot based microservice for managing patient records, including registr
 - PostgreSQL
 - Kafka
 - gRPC
+- Redis
 - JWT (JSON Web Token)
 - MapStruct
 - Docker
