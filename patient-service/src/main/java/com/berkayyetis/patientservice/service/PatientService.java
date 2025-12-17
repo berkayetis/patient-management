@@ -8,6 +8,9 @@ import com.berkayyetis.patientservice.dto.PagedPatientResponseDTO;
 import com.berkayyetis.patientservice.grpc.BillingServiceGrpcClient;
 import com.berkayyetis.patientservice.kafka.KafkaProducer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +27,7 @@ import com.berkayyetis.patientservice.repository.PatientRepository;
 
 @Service
 public class PatientService {
+    private static final Logger log = LoggerFactory.getLogger(PatientService.class);
     private final PatientRepository patientRepository;
     private final BillingServiceGrpcClient billingServiceGrpcClient;
     private final KafkaProducer kafkaProducer;
@@ -36,7 +40,12 @@ public class PatientService {
         this.kafkaProducer = kafkaProducer;
     }
 
+    @Cacheable(
+            value = "patients",
+            key = "#page + '-' + #size + '-' + #sort + '-' + #sortField",
+            condition = "#searchValue == '' ")
     public PagedPatientResponseDTO getPatients(int page, int size, String sort, String sortField, String searchValue){
+        log.info("[Redis] cache miss - fetching from DB");
 
         Pageable pageable = PageRequest.of(page-1, size,
                 sort.equalsIgnoreCase("desc")
