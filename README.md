@@ -30,7 +30,6 @@ A Spring Boot based microservice for managing patient records, including registr
 - Docker
 - Spring Cloud Gateway
 - Swagger (OpenAPI)
-- Redis
 ---
 
 ## 🧾 Prerequisites
