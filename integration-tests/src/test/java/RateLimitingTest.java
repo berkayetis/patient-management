@@ -14,7 +14,6 @@ public class RateLimitingTest {
     }
 
     @Test
-    @DisplayName("Rate Limiting: İlk 10 istek geçmeli, 11. istek bloklanmalı")
     public void shouldManageTrafficAndLimitUsers() throws InterruptedException {
         // Login
         String loginPayload = """
