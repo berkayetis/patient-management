@@ -45,7 +45,14 @@ public class PatientService {
             key = "#page + '-' + #size + '-' + #sort + '-' + #sortField",
             condition = "#searchValue == '' ")
     public PagedPatientResponseDTO getPatients(int page, int size, String sort, String sortField, String searchValue){
+
         log.info("[Redis] cache miss - fetching from DB");
+
+        try {
+            Thread.sleep(2000);
+        }catch (InterruptedException e){
+            log.error(e.getMessage());
+        }
 
         Pageable pageable = PageRequest.of(page-1, size,
                 sort.equalsIgnoreCase("desc")

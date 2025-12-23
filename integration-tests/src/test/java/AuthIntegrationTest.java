@@ -14,48 +14,43 @@ public class AuthIntegrationTest {
     }
 
     @Test
-    public void shouldReturnUnauthorizedWithInvalidUser() {
-        // 1.arrange
-        // 2.act
-        // 3.assert
-
+    public void shouldReturnUnauthorizedOnInvalidLogin() {
         String loginPayload = """
-                {
-                "email": "invalid_user@test.com",
-                "password": "wrong_password"
-                }
-                """;
+          {
+            "email": "invalid_user@test.com",
+            "password": "wrongpassword"
+          }
+        """;
 
-        Response response = given().contentType(ContentType.JSON).body(loginPayload)
-                .when().post("/login")
-                .then().statusCode(401)
-                .body("token", notNullValue())
-                .extract()
-                .response();
-
+        given()
+                .contentType("application/json")
+                .body(loginPayload)
+                .when()
+                .post("/auth/login")
+                .then()
+                .statusCode(401);
     }
 
     @Test
-    public void shouldReturnOkWithValidToken() {
-        // 1.arrange
-        // 2.act
-        // 3.assert
-
+    public void shouldReturnOKWithValidToken() {
         String loginPayload = """
-                {
-                "email": "testuser@test.com",
-                "password": "password123"
-                }
-                """;
+          {
+            "email": "testuser@test.com",
+            "password": "password123"
+          }
+        """;
 
-        Response response = given().contentType(ContentType.JSON).body(loginPayload)
-                .when().post("/login")
-                .then().statusCode(200)
+        Response response = given()
+                .contentType("application/json")
+                .body(loginPayload)
+                .when()
+                .post("/auth/login")
+                .then()
+                .statusCode(200)
                 .body("token", notNullValue())
                 .extract()
                 .response();
 
-        System.out.println("Generated token: " + response.jsonPath().getString("token"));
-
+        System.out.println("Generated Token: " + response.jsonPath().getString("token"));
     }
 }

@@ -15,7 +15,12 @@ spring:
           filters:
             - StripPrefix=1
             - JwtValidation
-
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 5
+                redis-rate-limiter.burstCapacity: 5
+                redis-rate-limiter.requestedTokens: 1
+                key-resolver: "#{@userKeyResolver}"
         - id: api-docs-patient-route
           uri: http://host.docker.internal:4000
           predicates:

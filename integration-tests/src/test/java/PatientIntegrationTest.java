@@ -22,15 +22,22 @@ public class PatientIntegrationTest {
                 }
                 """;
 
-        String token = given().contentType(ContentType.JSON).body(loginPayload)
-                .when().post("/login")
-                .then().statusCode(200)
+        String token = given()
+                .contentType("application/json")
+                .body(loginPayload)
+                .when()
+                .post("auth/login")
+                .then()
+                .statusCode(200)
                 .extract()
-                .jsonPath().getString("token");
+                .jsonPath()
+                .get("token");
 
         given().header("Authorization", "Bearer " + token)
-                .when().get("api/patients")
-                .then().statusCode(200)
+                .when()
+                .get("api/patients")
+                .then()
+                .statusCode(200)
                 .body("patients", notNullValue());
     }
 }
